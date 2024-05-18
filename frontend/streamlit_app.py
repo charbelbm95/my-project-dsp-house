@@ -35,13 +35,13 @@ if st.button("Predict"):
 st.header("Batch Prediction")
 uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
     try:
-        response = requests.post("http://backend:8000/predict_csv/", files={"file": uploaded_file})
+        response = requests.post("http://backend:8000/predict_csv/", files={"file": uploaded_file.getvalue()})
         if response.status_code == 200:
             predictions = response.json()
-            st.write("Predictions:")
-            st.dataframe(pd.DataFrame(predictions))
+            df = pd.DataFrame(predictions)
+            st.write("Batch Predictions:")
+            st.table(df)
         else:
             st.write(f"Error: {response.json().get('detail')}")
     except Exception as e:
@@ -49,23 +49,21 @@ if uploaded_file:
 
 # Fetch past predictions
 st.header("Past Predictions")
-source = st.selectbox("Select Source", options=["all", "webapp", "scheduled"])
 start_date = st.date_input("Start date")
 end_date = st.date_input("End date")
+source = st.selectbox("Source", ["all", "webapp", "scheduled"])
 
 if st.button("Fetch Predictions"):
-    params = {
-        "source": source,
-        "start_date": start_date.strftime("%Y-%m-%d") if start_date else None,
-        "end_date": end_date.strftime("%Y-%m-%d") if end_date else None
-    }
     try:
-        response = requests.get("http://backend:8000/predictions/", params=params)
+        response = requests.get(
+            f"http://backend:8000/predictions/",
+            params={"start_date": start_date, "end_date": end_date, "source": source}
+        )
         if response.status_code == 200:
             past_predictions = response.json().get("predictions")
-            st.write("Filtered Predictions:")
-            df = pd.DataFrame(past_predictions, columns=["Time", "Date", "Source", "Inputs", "Prediction"])
-            st.dataframe(df)
+            df = pd.DataFrame(past_predictions, columns=["ID", "Inputs", "Prediction", "Prediction Time", "Source"])
+            st.write("Past Predictions:")
+            st.table(df)
         else:
             st.write(f"Error: {response.json().get('detail')}")
     except Exception as e:
