@@ -18,8 +18,8 @@ dag = DAG(
         'retries': 1,
         'retry_delay': timedelta(minutes=1),
     },
-    description='Read CSV and send to API every 2 minutes',
-    schedule_interval='*/2 * * * *',
+    description='Read CSV and send to API every 60 seconds',
+    schedule_interval=timedelta(seconds=60),
     start_date=days_ago(1),
     catchup=False
 )

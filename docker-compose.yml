@@ -30,6 +30,9 @@ services:
       - ./airflow/plugins:/opt/airflow/plugins
       - ./good-data:/opt/good-data/
       - ./predicted-data:/opt/predicted-data/
+      - ./bad-data:/opt/bad-data/
+      - ./airflow/gx:/opt/airflow/gx
+      - ./good-data:/opt/good-data/
     entrypoint: /entrypoint.sh
     command: ["airflow", "webserver"]
 
@@ -50,6 +53,9 @@ services:
       - ./airflow/plugins:/opt/airflow/plugins
       - ./good-data:/opt/good-data/
       - ./predicted-data:/opt/predicted-data/
+      - ./bad-data:/opt/bad-data/
+      - ./airflow/gx:/opt/airflow/gx
+      - ./good-data:/opt/good-data/
 
   backend:
     build:

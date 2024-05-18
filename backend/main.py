@@ -52,11 +52,11 @@ async def predict_csv(file: UploadFile = File(...)):
         predictions = model.predict(scaled_data)
         df['Net_Hourly_Electrical_Energy_Output'] = predictions
 
-        # Save predictions to database with timestamp
+        # Save predictions to database with timestamp and source as "scheduled"
         prediction_time = datetime.now()
         for index, row in df.iterrows():
             cursor.execute("INSERT INTO predictions (inputs, prediction, prediction_time, source) VALUES (?, ?, ?, ?)", 
-                           (str(row[:-1].tolist()), row['Net_Hourly_Electrical_Energy_Output'], prediction_time, "webapp"))
+                           (str(row[:-1].tolist()), row['Net_Hourly_Electrical_Energy_Output'], prediction_time, "scheduled"))
         conn.commit()
 
         return df.to_dict(orient="records")
@@ -64,13 +64,16 @@ async def predict_csv(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/predictions/")
-async def get_past_predictions(start_date: str, end_date: str, source: str = "all"):
+async def get_past_predictions(start_date: str, end_date: str, source: str = "all", page: int = 1, page_size: int = 20):
     query = "SELECT * FROM predictions WHERE prediction_time BETWEEN ? AND ?"
     params = [start_date, end_date]
 
     if source != "all":
         query += " AND source = ?"
         params.append(source)
+    
+    query += " ORDER BY prediction_time DESC LIMIT ? OFFSET ?"
+    params.extend([page_size, (page - 1) * page_size])
 
     cursor.execute(query, params)
     rows = cursor.fetchall()
