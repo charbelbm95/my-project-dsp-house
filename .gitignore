@@ -1,2 +1,5 @@
+airflow/logs/
+*.log
+
 logs/
 *.log

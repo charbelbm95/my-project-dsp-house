@@ -1,0 +1,173 @@
+{
+  "expectation_suite_name": "data_expectations",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "Temperature",
+        "type_": "float"
+      },
+      "meta": {
+        "desc": "Temperature should be numeric (float)."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "Exhaust Vacuum",
+        "type_": "float"
+      },
+      "meta": {
+        "desc": "Exhaust Vacuum should be numeric (float)."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "Ambient Pressure",
+        "type_": "float"
+      },
+      "meta": {
+        "desc": "Ambient Pressure should be numeric (float)."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "Relative Humidity",
+        "type_": "float"
+      },
+      "meta": {
+        "desc": "Relative Humidity should be numeric (float)."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Temperature"
+      },
+      "meta": {
+        "desc": "No null values are allowed in Temperature."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Exhaust Vacuum"
+      },
+      "meta": {
+        "desc": "No null values are allowed in Exhaust Vacuum."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Ambient Pressure"
+      },
+      "meta": {
+        "desc": "No null values are allowed in Ambient Pressure."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Relative Humidity"
+      },
+      "meta": {
+        "desc": "No null values are allowed in Relative Humidity."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Temperature",
+        "min_value": -100,
+        "max_value": 100,
+        "mostly": 1
+      },
+      "meta": {
+        "desc": "Temperature should be within a realistic range (-100°C to 100°C)."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Ambient Pressure",
+        "min_value": 0,
+        "max_value": 100000,
+        "mostly": 1
+      },
+      "meta": {
+        "desc": "No negative values or excessively large values are allowed in Ambient Pressure."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Relative Humidity",
+        "min_value": 0,
+        "max_value": 100,
+        "mostly": 1
+      },
+      "meta": {
+        "desc": "No negative values or excessively large values are allowed in Relative Humidity."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex",
+      "kwargs": {
+        "column": "Temperature",
+        "regex": ".*,.*"
+      },
+      "meta": {
+        "desc": "No commas are allowed in numeric values in Temperature."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Exhaust Vacuum",
+        "min_value": 0,
+        "max_value": 200,
+        "mostly": 1
+      },
+      "meta": {
+        "desc": "No negative values or excessively large values are allowed in Exhaust Vacuum."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex",
+      "kwargs": {
+        "column": "Exhaust Vacuum",
+        "regex": ".*,.*"
+      },
+      "meta": {
+        "desc": "No commas are allowed in numeric values in Exhaust Vacuum."
+      }
+    },
+    
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex",
+      "kwargs": {
+        "column": "Ambient Pressure",
+        "regex": ".*,.*"
+      },
+      "meta": {
+        "desc": "No commas are allowed in numeric values in Ambient Pressure."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex",
+      "kwargs": {
+        "column": "Relative Humidity",
+        "regex": ".*,.*"
+      },
+      "meta": {
+        "desc": "No commas are allowed in numeric values in Relative Humidity."
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.13"
+  }
+}

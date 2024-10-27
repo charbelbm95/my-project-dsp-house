@@ -35,38 +35,57 @@ if st.button("Predict"):
 st.header("Batch Prediction")
 uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
     try:
-        response = requests.post("http://backend:8000/predict_csv/", files={"file": uploaded_file})
+        response = requests.post("http://backend:8000/predict_csv/", files={"file": uploaded_file.getvalue()})
         if response.status_code == 200:
             predictions = response.json()
-            st.write("Predictions:")
-            st.dataframe(pd.DataFrame(predictions))
+            df = pd.DataFrame(predictions)
+            st.write("Batch Predictions:")
+            st.table(df)
         else:
             st.write(f"Error: {response.json().get('detail')}")
     except Exception as e:
         st.write(f"Error: {e}")
 
-# Fetch past predictions
+# Function to fetch past predictions with pagination
+def fetch_predictions(start_date, end_date, source, page, page_size):
+    params = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "source": source,
+        "page": page,
+        "page_size": page_size
+    }
+    response = requests.get("http://backend:8000/predictions/", params=params)
+    if response.status_code == 200:
+        return response.json()["predictions"]
+    else:
+        st.error(f"Error fetching predictions: {response.status_code}")
+        return []
+
+# Fetch past predictions with pagination
 st.header("Past Predictions")
-source = st.selectbox("Select Source", options=["all", "webapp", "scheduled"])
-start_date = st.date_input("Start date")
-end_date = st.date_input("End date")
+start_date = st.date_input("Start Date")
+end_date = st.date_input("End Date")
+source = st.selectbox("Source", ["all", "webapp", "scheduled"])
+
+page = st.number_input("Page", min_value=1, step=1, value=1)
+page_size = 20
 
 if st.button("Fetch Predictions"):
-    params = {
-        "source": source,
-        "start_date": start_date.strftime("%Y-%m-%d") if start_date else None,
-        "end_date": end_date.strftime("%Y-%m-%d") if end_date else None
-    }
-    try:
-        response = requests.get("http://backend:8000/predictions/", params=params)
-        if response.status_code == 200:
-            past_predictions = response.json().get("predictions")
-            st.write("Filtered Predictions:")
-            df = pd.DataFrame(past_predictions, columns=["Time", "Date", "Source", "Inputs", "Prediction"])
-            st.dataframe(df)
-        else:
-            st.write(f"Error: {response.json().get('detail')}")
-    except Exception as e:
-        st.write(f"Error: {e}")
+    predictions = fetch_predictions(start_date, end_date, source, page, page_size)
+    if predictions:
+        df = pd.DataFrame(predictions, columns=["ID", "Inputs", "Prediction", "Prediction Time", "Source"])
+        st.write("Past Predictions:")
+        st.table(df)
+    else:
+        st.write("No predictions found for the selected criteria.")
+
+# Navigation buttons for pagination
+if st.button("Previous Page") and page > 1:
+    page -= 1
+    st.experimental_rerun()
+
+if st.button("Next Page") and len(predictions) == page_size:
+    page += 1
+    st.experimental_rerun()
